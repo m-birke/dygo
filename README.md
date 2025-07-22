@@ -61,6 +61,14 @@ The dict will be replaced with the value received from the user. Assuming the us
 
 Currently the key `dygo` serves as a flag for Dynamic Gooey to detect dynamic parameters (the value is ignored). All other key-value pairs in the `dygo` dict are treated as args for `GooeyParser.add_argument` (see [Gooey](https://github.com/chriskiehl/Gooey) for further documentation). Most important is the `dest` arg whose value will be displayed as a name of the parameter for the user.
 
+### Setting the Program Name & Description
+
+```py
+from dygo.config import set_program_metadata
+
+set_program_metadata(program_name="My Program", program_description="It does what it does")
+```
+
 ## License
 
 `dygo` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.

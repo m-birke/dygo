@@ -7,6 +7,8 @@ import yaml
 from gooey import Gooey, GooeyParser
 from jsonpath_ng import jsonpath, parse
 
+from dygo.config import get_program_name, get_program_description
+
 ConfigType = Union[dict, list, str, int, float, bool, None]
 
 
@@ -32,17 +34,27 @@ def render(path: Union[str, Path]) -> Any:
     return cfg
 
 
-@Gooey
-def _render_gooey(dygo_params_map_with_id: dict, cfg: ConfigType):
-    parser = GooeyParser(description="TODO allow user to define progr name")
+def _render_gooey(dygo_params_map_with_id: dict, cfg: ConfigType) -> Any:
+    # Apply Gooey decorator dynamically at runtime to get current metadata
+    gooey_decorator = Gooey(
+        program_name=get_program_name(),
+        program_description=get_program_description(),
+    )
 
-    for param_id in dygo_params_map_with_id:
-        arg_params = _get_path_target(dygo_params_map_with_id[param_id], cfg)
-        arg_params = _clean_arg_params(arg_params)
-        parser.add_argument(**arg_params)
+    def _inner_render_gooey():
+        parser = GooeyParser(description="dygo parser")
 
-    args = parser.parse_args()
-    return args
+        for param_id in dygo_params_map_with_id:
+            arg_params = _get_path_target(dygo_params_map_with_id[param_id], cfg)
+            arg_params = _clean_arg_params(arg_params)
+            parser.add_argument(**arg_params)
+
+        args = parser.parse_args()
+        return args
+
+    # Apply the decorator and call the function
+    decorated_function = gooey_decorator(_inner_render_gooey)
+    return decorated_function()
 
 
 def _clean_arg_params(arg_params: dict):
