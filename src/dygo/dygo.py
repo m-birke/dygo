@@ -7,7 +7,7 @@ import yaml
 from gooey import Gooey, GooeyParser
 from jsonpath_ng import jsonpath, parse
 
-from dygo.config import get_program_name, get_program_description
+from dygo.config import get_program_description, get_program_name
 
 ConfigType = Union[dict, list, str, int, float, bool, None]
 
@@ -27,9 +27,9 @@ def render(path: Union[str, Path]) -> Any:
 
     args = _render_gooey(dygo_param_maps_with_dest, cfg)
 
-    for arg_dest in dygo_param_maps_with_dest:
+    for arg_dest, node_path in dygo_param_maps_with_dest.items():
         value = getattr(args, arg_dest)
-        _overwrite_map_target(cfg, dygo_param_maps_with_dest[arg_dest], value)
+        _overwrite_map_target(cfg=cfg, node_path=node_path, value=value)
 
     return cfg
 
@@ -44,8 +44,8 @@ def _render_gooey(dygo_params_map_with_id: dict, cfg: ConfigType) -> Any:
     def _inner_render_gooey():
         parser = GooeyParser(description="dygo parser")
 
-        for param_id in dygo_params_map_with_id:
-            arg_params = _get_path_target(dygo_params_map_with_id[param_id], cfg)
+        for _param_id, node_path in dygo_params_map_with_id.items():
+            arg_params = _get_path_target(node_path=node_path, cfg=cfg)
             arg_params = _clean_arg_params(arg_params)
             parser.add_argument(**arg_params)
 
@@ -86,13 +86,13 @@ def _find_dygo_params(cfg: ConfigType) -> List[str]:
 
 
 def _load_cfg(path: Path) -> ConfigType:
-
     if path.suffix == ".json":
         with path.open() as file:
             return json.load(file)
 
-    if path.suffix == ".yaml" or path.suffix == ".yml":
+    if path.suffix in {".yaml", ".yml"}:
         with path.open() as file:
-            return yaml.load(file, Loader=yaml.FullLoader)
+            return yaml.safe_load(file)
 
-    raise NotImplementedError(f"File ending {path.suffix} not supported")
+    msg = f"File ending {path.suffix} not supported"
+    raise NotImplementedError(msg)

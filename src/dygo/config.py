@@ -3,7 +3,7 @@ DYGO_PROGRAM_DESCRIPTION = "Select parameters dynamically from a config file"
 
 
 def set_program_metadata(program_name: str, program_description: str):
-    global DYGO_PROGRAM_NAME, DYGO_PROGRAM_DESCRIPTION
+    global DYGO_PROGRAM_NAME, DYGO_PROGRAM_DESCRIPTION  # noqa PLW0603
 
     DYGO_PROGRAM_NAME = program_name
     DYGO_PROGRAM_DESCRIPTION = program_description
