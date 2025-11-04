@@ -1,5 +1,9 @@
 # Dynamic Gooey Changelog
 
+## 0.3.1 (2025-11-04)
+
+- Using `yaml.safe_load()`
+
 ## 0.3.0 (2025-07-22)
 
 - Enable customized program name and description
