@@ -9,6 +9,10 @@ jobs:
     runs-on: "windows-latest"
 
     steps:
+      - name: Configure git line endings
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
       - name: Checkout
         uses: actions/checkout@v5
       - name: Set up Python 3.10
