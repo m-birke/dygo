@@ -7,7 +7,7 @@ import yaml
 from gooey import Gooey, GooeyParser
 from jsonpath_ng import jsonpath, parse
 
-from dygo.config import get_program_name, get_program_description
+from dygo.config import get_program_description, get_program_name
 
 ConfigType = Union[dict, list, str, int, float, bool, None]
 
@@ -86,7 +86,6 @@ def _find_dygo_params(cfg: ConfigType) -> List[str]:
 
 
 def _load_cfg(path: Path) -> ConfigType:
-
     if path.suffix == ".json":
         with path.open() as file:
             return json.load(file)
